@@ -1,0 +1,42 @@
+---
+- name: install k3s on borg1 
+  hosts: borg1
+  tasks:
+
+  - name: install k3s
+    shell: yes | curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--flannel-backend=none --disable-network-policy --cluster-cidr=192.168.0.0/16" INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644 --secrets-encryption" sh -
+    args:
+      executable: /bin/bash
+
+  - name: register token as rtoke
+    shell: cat /var/lib/rancher/k3s/server/node-token
+    args:
+      executable: /bin/bash
+    register: rtoke
+
+  - name: register borg1 IP address as addrz
+    shell: hostname -I | cut -d' ' -f1
+    args:
+      executable: /bin/bash
+    register: addrz
+  
+  - name: fill hostvar name
+    add_host:
+      name: "borg1"
+      ADDRZ: "{{ addrz.stdout }}"
+      RTOKE: "{{ rtoke.stdout }}"
+
+- name: install k3s on borg2
+  hosts: borg2
+  tasks:
+  - name: install k3s on second borg
+    shell: "yes | curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['borg1']['ADDRZ'] }}:6443 K3S_TOKEN={{ hostvars['bottle1']['RTOKE'] }} sh -"
+    args:
+      executable: /bin/bash
+
+- name: install calico via manifest
+  hosts: borg1
+  tasks:
+  - name: sleep for 15 seconds to let calico nodes come online more then apply calico CNI
+    shell: sleep 15 && kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calico.yaml
+ ...
