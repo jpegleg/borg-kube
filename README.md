@@ -37,26 +37,12 @@ AppArmor on k3s has the potential to conflict with NeuVector, but I'm testing th
 Not having AppArmor in Ubuntu can cause potential issues, so I'm testing that scenario out. 
 It appears that so far most things are working, although I would not be surprised if some functionality is broken because of that, TBD.
 
-#### I added a node to the cluster but it isn't showing up in NeuVector WUI - note
+#### Tips on stability
 
-The replicas being 3 here is for when there were two servers and adding a third didn't show up.
-After scaling the deployments up a notch, it started showing up. TBD on if this actually helped or was just timing.
+NeuVector does not work well in all cluster configurations, and it may crash, as of the time of this writing. 
+Don't rely on it being up for critical operations, use it as an analysis and audit WUI.
 
-```
-kubectl scale --replicas=3 -n neuvector deployment/neuvector-scanner-pod
-kubectl scale --replicas=3 -n neuvector deployment/neuvector-manager-pod
-```
-Another way to "clear" NeuVector during "unknown error" states, take it down and back up:
-
-```
-kubectl scale --replicas=0 -n neuvector deployment/neuvector-scanner-pod
-kubectl scale --replicas=0 -n neuvector deployment/neuvector-manager-pod
-kubectl scale --replicas=3 -n neuvector deployment/neuvector-scanner-pod
-kubectl scale --replicas=3 -n neuvector deployment/neuvector-manager-pod
-```
-
-This may be a consequence of management via manifest...
-
+Configuration and policy can be imported and exported on the settings page. Save the configuration when you get something useful, export it, so that when it inevitably crashes or you need to implement it in another cluster, the security can be treated as code. We don't want to have to have to have it "re-learn" all the policy after every crash, ideally :)
 
 ## Design choices
 
@@ -65,11 +51,11 @@ It isn't perfect API storage encryption, but it better than default. This could 
 
 This cluster is designed to utilize manifests and the k3s curl bash installer. Offline install can be done by loading the image tarballs with k3s ctr and using manifests locally. The NeuVector manifest is stored with it's license in `files/` with `local_neuvector_manifest_copy.yml` and `NEUVECTOR_LICENSE`. Neither of these files are normally required, but I wanted to include the NeuVector manifest being used locally for review purposes. See the executor `neu.sh` which creates an alias for kubectl if k3s is installed and then creates all of the RBAC, (PSP), and applies the NeuVector services via manifest.
 
-The cluster starts out less secure in discovery mode, but can then be hardened via activity in the WUI.
+The cluster starts out less secure in discovery mode, but can then be hardened via activity in the WUI, or via code of course.
 
 The installation is done with some minimal ansible and shell. Feel free to change that, just keeping this one to the point.
 
-Calico is configured to use wireguard and eBPF mode.
+Calico is configured to use wireguard and disable eBPF. The Calico eBPF may be destabilizing the WUI.
 
 ```
 ---
@@ -78,11 +64,10 @@ kind: FelixConfiguration
 metadata:
   name: default
 spec:
-  bpfEnabled: true
+  bpfEnabled: false
   bpfDisableUnprivileged: true
   bpfKubeProxyIptablesCleanupEnabled: true
   wireguardEnabled: true
-  bpfExternalServiceMode: DSR
 ...
 ```
 
