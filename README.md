@@ -47,6 +47,22 @@ The installation is done with some minimal ansible and shell. Feel free to chang
 
 Calico is configured to use wireguard and eBPF mode.
 
+```
+---
+apiVersion: projectcalico.org/v3
+kind: FelixConfiguration
+metadata:
+  name: default
+spec:
+  bpfEnabled: true
+  bpfDisableUnprivileged: true
+  bpfKubeProxyIptablesCleanupEnabled: true
+  wireguardEnabled: true
+  bpfExternalServiceMode: DSR
+...
+```
+
+
 With this we ideally leave only some well protected area restricted for calicoctl and only calicoctl, via Kubernetes RBAC and network rules automation.
 
 
