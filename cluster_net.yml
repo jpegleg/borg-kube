@@ -4,7 +4,7 @@
   tasks:
   - name: copy out calicoctl manifest to /root of the control node
     copy:
-      src: files/lobal_network_policy.yml
+      src: files/global_network_policy.yml
       dest: /root/global_network_policy.yml
     tags: 
       - form
