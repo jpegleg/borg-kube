@@ -4,9 +4,8 @@ kind: FelixConfiguration
 metadata:
   name: default
 spec:
-  bpfEnabled: true
+  bpfEnabled: false
   bpfDisableUnprivileged: true
   bpfKubeProxyIptablesCleanupEnabled: true
   wireguardEnabled: true
-  bpfExternalServiceMode: DSR
 ...
