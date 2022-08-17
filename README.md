@@ -1,6 +1,10 @@
 # borg-kube 📦
 Configure k3s with NeuVector and Calico. A Kubernetes build script that has automated security policy. 
 
+This approach is less stable perhaps than a lighter resource solution like Tetragon combined with Wazuh.
+However NeuVector does include many appealing features, such as CVE aggregation, and rule development automation,
+as well as WAF, and active response automation. Wazuh and tetragon can accomplish most of these things, but the rule writing automation in NeuVector is superior at the time of this writing. See the tips section below when the WUI fails.
+
 - current test targets 2022-08-16: Ubuntu 22
 - next target: Leap 15
 
@@ -18,6 +22,14 @@ The replicas being 3 here is for when there were two servers and adding a third 
 After scaling the deployments up a notch, it started showing up. TBD on if this actually helped or was just timing.
 
 ```
+kubectl scale --replicas=3 -n neuvector deployment/neuvector-scanner-pod
+kubectl scale --replicas=3 -n neuvector deployment/neuvector-manager-pod
+```
+Another way to "clear" NeuVector during "unknown error" states, take it down and back up:
+
+```
+kubectl scale --replicas=0 -n neuvector deployment/neuvector-scanner-pod
+kubectl scale --replicas=0 -n neuvector deployment/neuvector-manager-pod
 kubectl scale --replicas=3 -n neuvector deployment/neuvector-scanner-pod
 kubectl scale --replicas=3 -n neuvector deployment/neuvector-manager-pod
 ```
