@@ -2,10 +2,18 @@
 - name: apply NeuVector manifests
   hosts: borg1
   tasks:
-  - name: copy out calicoctl manifest to /root of the control node
+  - name: copy out NeuVector manifest script to borg1
     copy:
       src: files/neu.sh
       dest: /root/neu.sh
+    tags: 
+      - sec
+      - neuvector
+      - neuscriptdeploy
+  - name: ccopy out psp, note deprecation
+    copy:
+      src: files/nv_psp.yaml
+      dest: /root/nv_psp.yaml
     tags: 
       - sec
       - neuvector
