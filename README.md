@@ -1,7 +1,28 @@
 # borg-kube 📦
 Configure k3s with NeuVector and Calico. A Kubernetes build script that has automated security policy. 
 
-This approach is less stable perhaps than a lighter resource solution like Tetragon combined with Wazuh.
+Example building a cluster from hosts.ini with a single control plane of hosts category `borg1` and all other nodes as category `borg1` in the Ansible inventory.
+```
+[borg1]
+192.168.1.144
+
+[borg2]
+192.168.1.131
+192.168.1.130
+192.168.1.132
+```
+
+Ensure ssh access for root is authorized, then apply the full formation playboook run:
+
+```
+anisble-playbook -u root -i hosts.ini cluster_formation.yml
+anisble-playbook -u root -i hosts.ini cluster_net.yml
+anisble-playbook -u root -i hosts.ini cluster_borg.yml
+```
+
+Then create your development projects and service deployments with a ServiceAccount via GitOps etc. After NeuVector has run in discover mode for a while with the deployments in use, switch items to Protect mode and adjust any autowritten rules. Then, we have NeuVector visibility, alerting, enforcement, and more.
+
+NeuVector approach is less stable perhaps than a lighter resource solution like Tetragon combined with Wazuh.
 However NeuVector does include many appealing features, such as CVE aggregation, and rule development automation,
 as well as WAF, and active response automation. Wazuh and tetragon can accomplish most of these things, but the rule writing automation in NeuVector is superior at the time of this writing. See the tips section below when the WUI fails.
 
