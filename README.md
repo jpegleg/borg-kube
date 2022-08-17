@@ -6,6 +6,8 @@ Configure k3s with NeuVector and Calico. A Kubernetes build script that has auto
 
 Make sure the nodes have ~1GB RAM available for NeuVector, in addition to the RAM needed for the workloads, as well as plenty of additional storage space.
 
+Also see https://github.com/jpegleg/k3s-dragon-eggs for more k3s related ansible references and Calico concepts.
+
 AppArmor on k3s has the potential to conflict with NeuVector, but I'm testing that area.
 Not having AppArmor in Ubuntu can cause potential issues, so I'm testing that scenario out. 
 It appears that so far most things are working, although I would not be surprised if some functionality is broken because of that, TBD.
