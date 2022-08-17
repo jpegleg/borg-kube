@@ -1,0 +1,17 @@
+---
+- name: apply calico config via manifest
+  hosts: borg1
+  tasks:
+  - name: copy out calicoctl manifest to /root of the control node
+    copy:
+      src: files/lobal_network_policy.yml
+      dest: /root/global_network_policy.yml
+    tags: 
+      - form
+      - net
+  - name: sleep for 15 seconds to let calico nodes come online, like if applied back to back or concat with the formation
+    shell: sleep 15 && kubectl apply -f /root/global_network_policy.yml && rm -rf /root/global_network_policy.yml
+    tags: 
+      - form
+      - net
+ ...
