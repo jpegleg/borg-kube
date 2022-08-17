@@ -1,3 +1,4 @@
+which k3s && alias kubectl="k3s kubectl" || exit 1
 kubectl create namespace neuvector
 kubectl create -f nv_psp.yaml 
 
