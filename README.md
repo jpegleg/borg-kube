@@ -49,7 +49,7 @@ Configuration and policy can be imported and exported on the settings page. Save
 The Kubernetes API storage is sqlite based and encrypted at rest, although k3s stores the password on disk. 
 It isn't perfect API storage encryption, but it better than default. This could be swapped out with HashiCorp Vault for secret storage driver etc. The k3s encrypted API storage does come with key rotation and can be automated.
 
-This cluster is designed to utilize manifests and the k3s curl bash installer. Offline install can be done by loading the image tarballs with k3s ctr and using manifests locally. The NeuVector manifest is stored with it's license in `files/` with `local_neuvector_manifest_copy.yml` and `NEUVECTOR_LICENSE`. Neither of these files are normally required, but I wanted to include the NeuVector manifest being used locally for review purposes. See the executor `neu.sh` which creates an alias for kubectl if k3s is installed and then creates all of the RBAC, (PSP), and applies the NeuVector services via manifest.
+This cluster is designed to utilize manifests and the k3s curl bash installer. Offline install can be done by loading the image tarballs with k3s ctr and using manifests locally. The NeuVector manifest is stored with it's license in `files/` with `local_neuvector_manifest_copy.yml` and `NEUVECTOR_LICENSE`. Neither of these files are normally required, but I wanted to include the NeuVector manifest being used locally for review purposes. See the executor `neu.sh` which uses k3s kubectl to create all of the RBAC, (PSP), and applies the NeuVector services via manifest.
 
 The cluster starts out less secure in discovery mode, but can then be hardened via activity in the WUI, or via code of course.
 
