@@ -55,7 +55,7 @@ The cluster starts out less secure in discovery mode, but can then be hardened v
 
 The installation is done with some minimal ansible and shell. Feel free to change that, just keeping this one to the point.
 
-Calico is configured to use wireguard and disable eBPF. The Calico eBPF may be destabilizing the WUI.
+Calico is configured to use wireguard and disable eBPF "dataplane" in Calico in this example.
 
 ```
 ---
